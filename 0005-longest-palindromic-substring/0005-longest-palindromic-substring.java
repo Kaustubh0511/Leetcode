@@ -1,31 +1,32 @@
 class Solution {
-    public int expand(int i,int j,String s){
-        int left = i;
-        int right = j;
-        while(left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)){
-            left--;
-            right++;
-        }
-        return right - left -1;
-    }
     public String longestPalindrome(String s) {
         int n = s.length();
+        boolean[][] dp = new boolean[n][n];
         int[] ans = new int[]{0,0};
         
         for(int i=0;i<n;i++){
-            int ol = expand(i,i,s);
-            if(ol > ans[1] - ans[0] + 1){
-                int dist = ol/2;
-                ans[0] = i-dist;
-                ans[1] = i+dist;
-            }
-            int el = expand(i,i+1,s);
-            if(el > ans[1] - ans[0]+1){
-                int dist = (el/2) - 1;
-                ans[0] = i - dist;
-                ans[1] = i + dist+1;
+            dp[i][i] = true;
+        }
+        
+        for(int i = 0;i<n-1;i++){
+            if(s.charAt(i) == s.charAt(i+1)){
+                dp[i][i+1] = true;
+                ans[0] = i;
+                ans[1] = i+1;
             }
         }
+        
+        for(int d = 2; d < n;d++){
+            for(int i = 0;i<n-d ;i++){
+                int j = i+d;
+                if(s.charAt(i) == s.charAt(j) && dp[i+1][j-1]){
+                    dp[i][j] = true;
+                    ans[0] = i;
+                    ans[1] = j;
+                }
+            }
+        }
+        
         int i = ans[0];
         int j = ans[1];
         
